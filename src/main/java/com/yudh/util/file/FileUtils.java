@@ -42,15 +42,17 @@ public class FileUtils {
      * @param str
      */
     public static void writeTxt(File file, String str, boolean append){
-        FileWriter fileWriter = null;
+        BufferedWriter bufferedWriter = null;
+        OutputStreamWriter outputStreamWriter = null;
         try {
-            fileWriter = new FileWriter(file,append);
-            fileWriter.write(str);
+            outputStreamWriter = new OutputStreamWriter(new FileOutputStream(file,append),"utf-8");
+            bufferedWriter = new BufferedWriter(outputStreamWriter);
+            bufferedWriter.write(str);
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        finally {
-            closed(fileWriter);
+        } finally {
+            closed(bufferedWriter);
+            closed(outputStreamWriter);
         }
     }
 
@@ -65,8 +67,10 @@ public class FileUtils {
     public static String readFile(File file) {
         StringBuilder stringBuilder = new StringBuilder();
         BufferedReader bufferedReader = null;
+        InputStreamReader inputStreamReader = null;
         try {
-            bufferedReader = new BufferedReader(new FileReader(file));
+            inputStreamReader = new InputStreamReader(new FileInputStream(file),"UTF-8");
+            bufferedReader = new BufferedReader(inputStreamReader);
             String tempStr;
             while ((tempStr = bufferedReader.readLine())!=null){
                 stringBuilder.append(tempStr);
@@ -76,6 +80,7 @@ public class FileUtils {
             e.printStackTrace();
         } finally {
             closed(bufferedReader);
+            closed(inputStreamReader);
         }
         return null;
     }
